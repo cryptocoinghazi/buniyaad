@@ -1,52 +1,62 @@
 # Buniyaad Builders & Suppliers
 
-A mobile-first website prototype for house construction and building-material enquiries in Yavatmal.
+House construction and building-material enquiries in Yavatmal. The working business name and contact details remain owner-configurable.
 
-## Included
+## Current implementation
 
-- Construction with materials
-- Construction without materials / labour-focused work
-- Sand, bricks and cement quote enquiries
-- English, Hindi and Marathi language switching
-- Stage-based project gallery and accessible image viewer
-- Separate construction and material enquiry forms with WhatsApp handoff
-- Mobile preview dashboard for projects, materials, testimonials and contact settings
+Vanilla HTML/CSS/JavaScript frontend, preserved from the initial design, with a new Cloudflare Worker backend:
 
-## Important launch notes
+- D1 stores shared business settings, materials, approved testimonials and project records.
+- R2 stores original uploads and WebP display/thumbnail variants. Original uploads require owner authentication; public variants are served only while a published project references them.
+- Cloudflare Access signs the owner identity. The Worker verifies the JWT signature, issuer, audience, expiry and the configured owner's email. Every admin route is checked independently. No browser password or client-side role is trusted.
+- Project editor supports draft/publish/archive/delete, project order, cover order, later construction-stage images and reviewed title/description translations.
+- Public homepages are rendered in English, Hindi and Marathi. Six English service pages and individual project pages contain delivered HTML, metadata and structured data. Additional project language URLs exist only after title and description translations are supplied.
+- Metadata, sitemap, project visibility and redirects update directly from the database without manual rebuilds after publishing. No paid AI service or SEO subscription is required.
 
-1. **Buniyaad Builders & Suppliers is a working name.** Check legal, domain and local-name availability before public launch.
-2. **The neoclassical residence is a real ongoing project, shown through design visualisations.** The interface identifies those images as design intent rather than completed work. The separate stage-journey images are generated demos and remain clearly labelled.
-3. **No customer testimonial is invented.** Feedback appears only after it is added with the permission checkbox in the dashboard.
-4. **Add the final phone and WhatsApp numbers** in the preview dashboard before public launch.
-5. The current dashboard is a front-end prototype. Its changes are stored in the current browser only. A production admin needs authenticated server storage for multi-device publishing and durable photo/video uploads.
+**This branch is prepared for external public Cloudflare hosting. It has not been deployed or connected to an owner account.** The existing private OpenAI Sites preview is unchanged. Its workspace allows only restricted access, so it cannot currently be the public customer-facing host.
 
-## Local preview
+Read [docs/launch.md](docs/launch.md) for required owner setup, commands, free-tier limitations and launch checks. Read [docs/implementation-report.md](docs/implementation-report.md) for verification and remaining limitations.
 
-Run from this project directory:
+## Development
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\tools\serve.ps1
+Node.js 22+ is needed for Wrangler; the test suite uses Node.js 24's built-in SQLite module.
+
+```sh
+npm ci
+npm run build
+npm run db:local
+npm run dev
 ```
 
-Then open `http://127.0.0.1:4173/`.
+The local Worker uses local D1/R2. Cloudflare Access is not simulated: admin requests fail closed unless configured and supplied a valid owner JWT. There is no insecure development password or production auth bypass.
 
-The deployable static files are in `dist/`. The Sites configuration is in `.openai/hosting.json`.
+```sh
+npm test
+npm run check
+npx wrangler deploy --dry-run --outdir build/cloudflare
+```
 
-## Generated image prompts
+`npm run check` builds and renders public pages and checks metadata, image descriptions/dimensions, internal paths, asset existence and JavaScript syntax. `npm test` builds first and exercises authorization, persistent SQLite-backed publishing, redirects, uploads, staging controls and private content boundaries.
 
-Three owner-supplied design views are used for the ongoing neoclassical residence:
+## Configuration
 
-- `ongoing-neoclassical-front.webp`
-- `ongoing-neoclassical-angle.webp`
-- `ongoing-neoclassical-elevation.webp`
+`wrangler.jsonc` contains non-secret deployment settings and placeholder resource names. `.dev.vars.example` documents local overrides; `.dev.vars` is ignored. Do not put privileged credentials in frontend files, source control, documentation or messages.
 
-They are shown as exterior design visualisations for work currently under construction, not as completed-house photography.
+Keep `INDEXING_ENABLED=false` until the intended public host is ready. Set `PUBLIC_ORIGIN` to its exact HTTPS origin. Preview hostnames remain noindexed even when the production flag is enabled.
 
-Four additional original WebP assets were generated with the built-in image generation workflow for this project:
+The existing `.openai/hosting.json` and historical PowerShell publishing helper retain the original private Site identity for reference. **Do not deploy this backend branch with the old static Sites helper:** it would publish only static files, without the database, storage or authentication boundary. Use the documented Cloudflare Worker workflow.
 
-- `hero.webp`: a wide, documentary-style Yavatmal-region house moving from brickwork to a finished facade, with negative space for copy.
-- `foundation.webp`: an organised residential foundation stage with reinforcement and footing geometry.
-- `brickwork.webp`: a modest Indian home at the brickwork stage with concrete columns and tidy material stacks.
-- `completed.webp`: an attainable contemporary Indian family home with a practical facade and native planting.
+## Photos and project provenance
 
-All prompts prohibited logos, readable signage, watermarks, unsafe practices and identifiable people.
+The portfolio contains two real owner-described projects, rather than six separate projects:
+
+1. Completed contemporary residence: owner-supplied original night photograph and a separately labelled AI-enhanced showcase image.
+2. Ongoing neoclassical residence: three owner-supplied planned exterior visualisations, explicitly labelled as design intent.
+
+The old generated foundation/brickwork/completed demo assets remain in Git history and the assets directory, but are absent from the real-project portfolio. The site does not claim those images depict the owner's work.
+
+Original upload downloads and a JSON/media-manifest export are available in the dashboard. Content exports reference media; also back up the R2 objects. Uploads do not appear publicly until their project is published. Video uploads are explicitly unsupported.
+
+## Browser-local data migration
+
+Nothing clears the old browser's localStorage. On the old origin/device, export its dashboard JSON before moving. The new dashboard can export old data only if it is opened on that same origin/device, and can import a JSON exported elsewhere. Imported project data is merged by ID and saved as drafts after review; embedded JPEG/PNG/WebP data URLs are uploaded to shared storage. Existing public settings, material notes and testimonials are not silently overwritten by imports. Re-enter reviewed business settings in their dedicated forms. Keep source exports until the shared import has been verified.
