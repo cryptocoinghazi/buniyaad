@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Preview dashboard | Buniyaad Builders &amp; Suppliers</title>
+    <style>
+      [data-admin] {
+        --ink: #17231c;
+        --muted: #5e685f;
+        --paper: #fffdf7;
+        --surface: #ffffff;
+        --sand: #eee4cf;
+        --sand-soft: #f8f2e7;
+        --brick: #a8462f;
+        --brick-dark: #773120;
+        --green: #1f5a3d;
+        --green-soft: #e7f1eb;
+        --line: #ded8ca;
+        --danger: #a12c2c;
+        min-height: 100vh;
+        color: var(--ink);
+        background:
+          linear-gradient(rgba(168, 70, 47, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(168, 70, 47, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      [data-admin] *,
+      [data-admin] *::before,
+      [data-admin] *::after {
+        box-sizing: border-box;
+      }
+
+      [data-admin] a {
+        color: inherit;
+      }
+
+      [data-admin] button,
+      [data-admin] input,
+      [data-admin] select,
+      [data-admin] textarea {
+        font: inherit;
+      }
+
+      [data-admin] .skip-link {
+        position: fixed;
+        z-index: 50;
+        top: 0.5rem;
+        left: 0.5rem;
+        padding: 0.65rem 0.85rem;
+        border-radius: 0.5rem;
+        color: #fff;
+        background: var(--ink);
+        transform: translateY(-150%);
+      }
+
+      [data-admin] .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      [data-admin] .preview-notice {
+        margin: 0;
+        padding: 0.72rem 1rem;
+        color: #fff;
+        background: var(--brick-dark);
+        text-align: center;
+        font-weight: 750;
+        letter-spacing: 0.01em;
+      }
+
+      [data-admin] .admin-header,
+      [data-admin] .admin-main {
+        width: min(1120px, calc(100% - 2rem));
+        margin-inline: auto;
+      }
+
+      [data-admin] .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 1.25rem;
+      }
+
+      [data-admin] .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      [data-admin] .brand-mark {
+        display: grid;
+        width: 2.7rem;
+        height: 2.7rem;
+        place-items: center;
+        border-radius: 0.72rem;
+        color: #fff;
+        background: var(--green);
+        font-weight: 900;
+      }
+
+      [data-admin] .brand strong,
+      [data-admin] .brand small {
+        display: block;
+      }
+
+      [data-admin] .brand small {
+        color: var(--muted);
+      }
+
+      [data-admin] .back-link {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 0.9rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--surface);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      [data-admin] .intro {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1rem;
+        align-items: end;
+        padding: clamp(1.4rem, 5vw, 3rem);
+        border: 1px solid var(--line);
+        border-radius: 1.25rem;
+        background: var(--sand-soft);
+        box-shadow: 0 14px 40px rgba(38, 31, 22, 0.08);
+      }
+
+      [data-admin] .eyebrow {
+        margin: 0 0 0.4rem;
+        color: var(--brick);
+        font-size: 0.78rem;
+        font-weight: 850;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      [data-admin] h1,
+      [data-admin] h2,
+      [data-admin] h3,
+      [data-admin] p {
+        margin-top: 0;
+      }
+
+      [data-admin] h1 {
+        max-width: 720px;
+        margin-bottom: 0.55rem;
+        font-size: clamp(2rem, 7vw, 4.4rem);
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+      }
+
+      [data-admin] h2 {
+        margin-bottom: 0.35rem;
+        font-size: clamp(1.35rem, 3vw, 1.9rem);
+      }
+
+      [data-admin] h3 {
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+      }
+
+      [data-admin] .intro p:last-child,
+      [data-admin] .section-heading p,
+      [data-admin] .helper,
+      [data-admin] .empty-state,
+      [data-admin] .card-meta {
+        color: var(--muted);
+      }
+
+      [data-admin] .local-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.65rem 0.8rem;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 0.85rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      [data-admin] .section-nav {
+        display: flex;
+        gap: 0.55rem;
+        margin: 1rem 0 2rem;
+        padding: 0.35rem 0 0.75rem;
+        overflow-x: auto;
+        scrollbar-width: thin;
+      }
+
+      [data-admin] .section-nav a {
+        flex: 0 0 auto;
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        font-size: 0.9rem;
+        font-weight: 750;
+        text-decoration: none;
+      }
+
+      [data-admin] .panel {
+        margin-block: 1rem;
+        padding: clamp(1rem, 4vw, 1.6rem);
+        border: 1px solid var(--line);
+        border-radius: 1.15rem;
+        background: var(--surface);
+        box-shadow: 0 8px 24px rgba(38, 31, 22, 0.055);
+        scroll-margin-top: 1rem;
+      }
+
+      [data-admin] .section-heading {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      [data-admin] .section-heading p {
+        max-width: 690px;
+        margin-bottom: 0;
+      }
+
+      [data-admin] .count {
+        min-width: 2rem;
+        padding: 0.25rem 0.52rem;
+        border-radius: 999px;
+        color: var(--green);
+        background: var(--green-soft);
+        text-align: center;
+        font-weight: 850;
+      }
+
+      [data-admin] .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      [data-admin] .field {
+        min-width: 0;
+      }
+
+      [data-admin] .field-full {
+        grid-column: 1 / -1;
+      }
+
+      [data-admin] label,
+      [data-admin] legend {
+        display: block;
+        margin-bottom: 0.38rem;
+        font-size: 0.9rem;
+        font-weight: 780;
+      }
+
+      [data-admin] .required {
+        color: var(--brick);
+      }
+
+      [data-admin] input:not([type="checkbox"]):not([type="file"]),
+      [data-admin] select,
+      [data-admin] textarea {
+        width: 100%;
+        min-height: 46px;
+        padding: 0.72rem 0.78rem;
+        border: 1px solid #bcb8ae;
+        border-radius: 0.65rem;
+        color: var(--ink);
+        background: #fff;
+      }
+
+      [data-admin] textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      [data-admin] input[type="file"] {
+        width: 100%;
+        padding: 0.85rem;
+        border: 1px dashed #a79d89;
+        border-radius: 0.65rem;
+        background: var(--sand-soft);
+      }
+
+      [data-admin] input:focus-visible,
+      [data-admin] select:focus-visible,
+      [data-admin] textarea:focus-visible,
+      [data-admin] button:focus-visible,
+      [data-admin] a:focus-visible {
+        outline: 3px solid rgba(31, 90, 61, 0.28);
+        outline-offset: 2px;
+      }
+
+      [data-admin] .helper {
+        margin: 0.35rem 0 0;
+        font-size: 0.78rem;
+      }
+
+      [data-admin] .check-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+      }
+
+      [data-admin] .check-row input {
+        width: 1.15rem;
+        height: 1.15rem;
+        margin-top: 0.15rem;
+        accent-color: var(--green);
+      }
+
+      [data-admin] .check-row label {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      [data-admin] .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        margin-top: 1rem;
+      }
+
+      [data-admin] .button {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        padding: 0.68rem 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.65rem;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      [data-admin] .button-primary {
+        color: #fff;
+        background: var(--green);
+      }
+
+      [data-admin] .button-secondary {
+        border-color: var(--line);
+        color: var(--ink);
+        background: #fff;
+      }
+
+      [data-admin] .button-danger {
+        border-color: rgba(161, 44, 44, 0.25);
+        color: var(--danger);
+        background: #fff4f2;
+      }
+
+      [data-admin] .button-small {
+        min-height: 38px;
+        padding: 0.48rem 0.7rem;
+        font-size: 0.82rem;
+      }
+
+      [data-admin] .button:disabled {
+        cursor: wait;
+        opacity: 0.62;
+      }
+
+      [data-admin] .saved-area {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+      }
+
+      [data-admin] .saved-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+      }
+
+      [data-admin] .saved-heading h3 {
+        margin: 0;
+      }
+
+      [data-admin] .card-list {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      [data-admin] .saved-card {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr) auto;
+        gap: 0.9rem;
+        align-items: center;
+        padding: 0.78rem;
+        border: 1px solid var(--line);
+        border-radius: 0.8rem;
+        background: #fff;
+      }
+
+      [data-admin] .saved-card.no-image {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      [data-admin] .saved-card img {
+        width: 76px;
+        height: 62px;
+        border-radius: 0.55rem;
+        object-fit: cover;
+        background: var(--sand);
+      }
+
+      [data-admin] .saved-card p {
+        margin-bottom: 0.1rem;
+      }
+
+      [data-admin] .card-title {
+        font-weight: 830;
+      }
+
+      [data-admin] .card-meta {
+        font-size: 0.82rem;
+      }
+
+      [data-admin] .tag {
+        display: inline-flex;
+        margin-top: 0.35rem;
+        padding: 0.2rem 0.48rem;
+        border-radius: 999px;
+        color: var(--brick-dark);
+        background: var(--sand-soft);
+        font-size: 0.73rem;
+        font-weight: 800;
+      }
+
+      [data-admin] .material-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+
+      [data-admin] .material-card {
+        margin: 0;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.85rem;
+      }
+
+      [data-admin] .material-card legend {
+        padding-inline: 0.35rem;
+        color: var(--brick-dark);
+        font-size: 1rem;
+      }
+
+      [data-admin] .material-card .field {
+        margin-top: 0.85rem;
+      }
+
+      [data-admin] .tool-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      [data-admin] .tool-card {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.85rem;
+        background: var(--sand-soft);
+      }
+
+      [data-admin] .tool-card p {
+        flex: 1;
+        margin-bottom: 0.8rem;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      [data-admin] .import-label {
+        margin: 0;
+      }
+
+      [data-admin] #importFile {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      [data-admin] .status-message {
+        position: fixed;
+        z-index: 30;
+        right: 1rem;
+        bottom: 1rem;
+        width: min(380px, calc(100% - 2rem));
+        margin: 0;
+        padding: 0.8rem 1rem;
+        border: 1px solid rgba(31, 90, 61, 0.25);
+        border-radius: 0.75rem;
+        color: var(--green);
+        background: #f1fff6;
+        box-shadow: 0 12px 32px rgba(23, 35, 28, 0.18);
+        font-weight: 750;
+      }
+
+      [data-admin] .status-message:empty {
+        display: none;
+      }
+
+      [data-admin] .status-message[data-kind="error"] {
+        border-color: rgba(161, 44, 44, 0.28);
+        color: var(--danger);
+        background: #fff3f1;
+      }
+
+      [data-admin] .admin-footer {
+        padding: 1.5rem 0 2.5rem;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.82rem;
+      }
+
+      @media (max-width: 760px) {
+        [data-admin] .admin-header {
+          align-items: flex-start;
+        }
+
+        [data-admin] .brand small {
+          display: none;
+        }
+
+        [data-admin] .intro,
+        [data-admin] .form-grid,
+        [data-admin] .material-grid,
+        [data-admin] .tool-grid {
+          grid-template-columns: 1fr;
+        }
+
+        [data-admin] .local-badge {
+          justify-self: start;
+        }
+
+        [data-admin] .field-full {
+          grid-column: auto;
+        }
+      }
+
+      @media (max-width: 520px) {
+        [data-admin] .admin-header,
+        [data-admin] .admin-main {
+          width: min(100% - 1rem, 1120px);
+        }
+
+        [data-admin] .preview-notice {
+          font-size: 0.86rem;
+        }
+
+        [data-admin] .brand-mark {
+          width: 2.35rem;
+          height: 2.35rem;
+        }
+
+        [data-admin] .back-link {
+          min-height: 40px;
+          padding: 0.52rem 0.7rem;
+          font-size: 0.82rem;
+        }
+
+        [data-admin] .saved-card,
+        [data-admin] .saved-card.no-image {
+          grid-template-columns: 58px minmax(0, 1fr);
+        }
+
+        [data-admin] .saved-card.no-image::before {
+          display: grid;
+          width: 58px;
+          height: 52px;
+          place-items: center;
+          border-radius: 0.5rem;
+          content: "B";
+          color: var(--brick-dark);
+          background: var(--sand-soft);
+          font-weight: 900;
+        }
+
+        [data-admin] .saved-card img {
+          width: 58px;
+          height: 52px;
+        }
+
+        [data-admin] .saved-card .button {
+          grid-column: 1 / -1;
+          width: 100%;
+        }
+
+        [data-admin] .actions .button {
+          flex: 1 1 100%;
+        }
+      }
+    </style>
+  </head>
+  <body data-admin>
+    <a class="skip-link" href="#main-content">Skip to dashboard</a>
+    <p class="preview-notice" role="note">
+      Preview dashboard — changes stay on this device.
+    </p>
+
+    <header class="admin-header">
+      <div class="brand" aria-label="Buniyaad preview dashboard">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span>
+          <strong id="headerBusinessName">Buniyaad Builders &amp; Suppliers</strong>
+          <small>Local website content preview</small>
+        </span>
+      </div>
+      <a class="back-link" href="index.html">← Back to website</a>
+    </header>
+
+    <main class="admin-main" id="main-content">
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Content control</p>
+          <h1 id="page-title">Keep the site fresh from your phone.</h1>
+          <p>
+            Add project progress, update material availability, and manage approved customer
+            feedback. This prototype saves only in this browser.
+          </p>
+        </div>
+        <span class="local-badge">● Device-only preview</span>
+      </section>
+
+      <nav class="section-nav" aria-label="Dashboard sections">
+        <a href="#settings">Settings</a>
+        <a href="#projects">Projects</a>
+        <a href="#materials">Materials</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#data-tools">Data tools</a>
+      </nav>
+
+      <section class="panel" id="settings" aria-labelledby="settings-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Business details</p>
+            <h2 id="settings-title">Website settings</h2>
+            <p>These details can be used by the website’s call and WhatsApp actions.</p>
+          </div>
+        </div>
+        <form id="settingsForm">
+          <div class="form-grid">
+            <div class="field field-full">
+              <label for="businessName">Business name <span class="required">*</span></label>
+              <input id="businessName" name="businessName" type="text" maxlength="80" required />
+            </div>
+            <div class="field">
+              <label for="businessPhone">Phone number <span class="required">*</span></label>
+              <input
+                id="businessPhone"
+                name="phone"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                pattern="[0-9+() -]{7,20}"
+                maxlength="20"
+                aria-describedby="phoneHelp"
+                required
+              />
+              <p class="helper" id="phoneHelp">Include the country code if customers may call from outside India.</p>
+            </div>
+            <div class="field">
+              <label for="businessWhatsapp">WhatsApp number <span class="required">*</span></label>
+              <input
+                id="businessWhatsapp"
+                name="whatsapp"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                pattern="[0-9+() -]{7,20}"
+                maxlength="20"
+                aria-describedby="whatsappHelp"
+                required
+              />
+              <p class="helper" id="whatsappHelp">Use the number that should receive website enquiries.</p>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="button button-primary" type="submit">Save settings</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Site progress</p>
+            <h2 id="projects-title">Add a project</h2>
+            <p>Photos are compressed for this preview. Video files are not stored—only their file details are recorded.</p>
+          </div>
+        </div>
+        <form id="projectForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="projectTitle">Project title <span class="required">*</span></label>
+              <input id="projectTitle" name="title" type="text" maxlength="90" required />
+            </div>
+            <div class="field">
+              <label for="projectLocation">Location <span class="required">*</span></label>
+              <input id="projectLocation" name="location" type="text" maxlength="90" required />
+            </div>
+            <div class="field">
+              <label for="projectArea">Plot or built-up area <span class="required">*</span></label>
+              <input
+                id="projectArea"
+                name="area"
+                type="text"
+                maxlength="50"
+                placeholder="e.g. 1,200 sq ft"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="projectMode">Construction mode <span class="required">*</span></label>
+              <select id="projectMode" name="mode" required>
+                <option value="">Choose a mode</option>
+                <option value="with-materials">With materials</option>
+                <option value="without-materials">Without materials</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="projectStatus">Status <span class="required">*</span></label>
+              <select id="projectStatus" name="status" required>
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="projectStage">Current stage <span class="required">*</span></label>
+              <select id="projectStage" name="stage" required>
+                <option value="foundation">Foundation</option>
+                <option value="structure">Structure</option>
+                <option value="brickwork">Brickwork</option>
+                <option value="plastering">Plastering</option>
+                <option value="completed">Completed house</option>
+              </select>
+            </div>
+            <div class="field field-full">
+              <label for="projectDescription">Project description <span class="required">*</span></label>
+              <textarea
+                id="projectDescription"
+                name="description"
+                maxlength="600"
+                placeholder="Describe the work handled and important project details."
+                required
+              ></textarea>
+            </div>
+            <div class="field field-full">
+              <label for="projectMedia">Project photos or videos</label>
+              <input
+                id="projectMedia"
+                name="media"
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                aria-describedby="mediaHelp mediaSelection"
+              />
+              <p class="helper" id="mediaHelp">
+                Select multiple files. Photos are resized before saving; videos remain on your device.
+              </p>
+              <p class="helper" id="mediaSelection" aria-live="polite">No files selected.</p>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="button button-primary" id="saveProjectButton" type="submit">Add project</button>
+          </div>
+        </form>
+
+        <div class="saved-area" aria-labelledby="saved-projects-title">
+          <div class="saved-heading">
+            <h3 id="saved-projects-title">Saved projects</h3>
+            <span class="count" id="projectCount" aria-label="0 saved projects">0</span>
+          </div>
+          <div class="card-list" id="projectList"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="materials" aria-labelledby="materials-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Supply status</p>
+            <h2 id="materials-title">Material availability</h2>
+            <p>Availability is a guide only; quantity, specification, price, and delivery should still be confirmed.</p>
+          </div>
+        </div>
+        <form id="materialsForm">
+          <div class="material-grid">
+            <fieldset class="material-card">
+              <legend>Sand</legend>
+              <div class="check-row">
+                <input id="sandAvailable" name="sandAvailable" type="checkbox" />
+                <label for="sandAvailable">Available for enquiries</label>
+              </div>
+              <div class="field">
+                <label for="sandNote">Availability note</label>
+                <textarea id="sandNote" name="sandNote" maxlength="180" placeholder="e.g. Confirm delivery by location"></textarea>
+              </div>
+            </fieldset>
+            <fieldset class="material-card">
+              <legend>Bricks</legend>
+              <div class="check-row">
+                <input id="bricksAvailable" name="bricksAvailable" type="checkbox" />
+                <label for="bricksAvailable">Available for enquiries</label>
+              </div>
+              <div class="field">
+                <label for="bricksNote">Availability note</label>
+                <textarea id="bricksNote" name="bricksNote" maxlength="180" placeholder="e.g. Type and quantity required"></textarea>
+              </div>
+            </fieldset>
+            <fieldset class="material-card">
+              <legend>Cement</legend>
+              <div class="check-row">
+                <input id="cementAvailable" name="cementAvailable" type="checkbox" />
+                <label for="cementAvailable">Available for enquiries</label>
+              </div>
+              <div class="field">
+                <label for="cementNote">Availability note</label>
+                <textarea id="cementNote" name="cementNote" maxlength="180" placeholder="e.g. Brand subject to confirmation"></textarea>
+              </div>
+            </fieldset>
+          </div>
+          <div class="actions">
+            <button class="button button-primary" type="submit">Save availability</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" id="testimonials" aria-labelledby="testimonials-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Customer feedback</p>
+            <h2 id="testimonials-title">Add an approved testimonial</h2>
+            <p>Only add feedback the customer has allowed you to publish.</p>
+          </div>
+        </div>
+        <form id="testimonialForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="testimonialName">Customer name <span class="required">*</span></label>
+              <input id="testimonialName" name="name" type="text" maxlength="80" required />
+            </div>
+            <div class="field">
+              <label for="testimonialLocation">Customer location</label>
+              <input id="testimonialLocation" name="location" type="text" maxlength="90" />
+            </div>
+            <div class="field field-full">
+              <label for="testimonialQuote">Customer’s words <span class="required">*</span></label>
+              <textarea id="testimonialQuote" name="quote" maxlength="500" required></textarea>
+            </div>
+            <div class="field field-full check-row">
+              <input id="testimonialPermission" name="permission" type="checkbox" required />
+              <label for="testimonialPermission">
+                I confirm the customer gave permission to publish this testimonial.
+                <span class="required">*</span>
+              </label>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="button button-primary" type="submit">Add testimonial</button>
+          </div>
+        </form>
+
+        <div class="saved-area" aria-labelledby="saved-testimonials-title">
+          <div class="saved-heading">
+            <h3 id="saved-testimonials-title">Approved testimonials</h3>
+            <span class="count" id="testimonialCount" aria-label="0 approved testimonials">0</span>
+          </div>
+          <div class="card-list" id="testimonialList"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="data-tools" aria-labelledby="data-tools-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Backup</p>
+            <h2 id="data-tools-title">Export, import, or reset</h2>
+            <p>Export a backup before clearing browser data or moving this preview to another device.</p>
+          </div>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <h3>Export data</h3>
+            <p>Download settings, projects, materials, and approved testimonials as one JSON file.</p>
+            <button class="button button-secondary" id="exportButton" type="button">Download backup</button>
+          </div>
+          <div class="tool-card">
+            <h3>Import data</h3>
+            <p>Restore a JSON backup made by this dashboard. Existing preview data will be replaced.</p>
+            <label class="button button-secondary import-label" for="importFile">Choose backup</label>
+            <input id="importFile" type="file" accept="application/json,.json" />
+          </div>
+          <div class="tool-card">
+            <h3>Reset preview</h3>
+            <p>Clear all saved projects, availability notes, testimonials, and contact settings on this device.</p>
+            <button class="button button-danger" id="resetButton" type="button">Reset device data</button>
+          </div>
+        </div>
+      </section>
+
+      <p class="admin-footer">This is a browser-local content prototype, not a secure production admin system.</p>
+    </main>
+
+    <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
+    <script src="admin.js"></script>
+  </body>
+</html>
