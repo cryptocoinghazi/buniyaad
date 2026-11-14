@@ -1,0 +1,5 @@
+PUBLIC_ORIGIN=http://localhost:8787
+INDEXING_ENABLED=false
+ACCESS_TEAM_DOMAIN=your-team.cloudflareaccess.com
+ACCESS_AUD=copy-from-your-access-application
+ADMIN_EMAIL=your-owner-email@example.com

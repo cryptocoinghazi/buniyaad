@@ -4,3 +4,11 @@ Thumbs.db
 build/
 qa/
 preview.*.log
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+worker/templates.generated.mjs
+coverage/

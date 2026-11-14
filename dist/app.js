@@ -628,10 +628,10 @@
       "trust.choiceBody": "With materials or without",
       "trust.quoteTitle": "Quote by requirement",
       "trust.quoteBody": "No one-size-fits-all price",
-      "projects.demoKey": "Demo images are labelled",
+      "projects.demoKey": "Original photos and design visuals are labelled",
       "projects.promiseTitle": "One clear visual record",
       "projects.promiseBody": "Every real project can be organised by location, area, scope, status, and construction stage.",
-      "projects.adminLink": "Open preview dashboard",
+      "projects.adminLink": "Owner dashboard",
       "services.enquire": "Enquire about this option",
       "services.getMaterialQuote": "Request a material quote",
       "comparison.label": "Not sure which option?",
@@ -681,7 +681,7 @@
       "trust.choiceBody": "सामग्री सहित या बिना सामग्री",
       "trust.quoteTitle": "ज़रूरत के अनुसार कोटेशन",
       "trust.quoteBody": "हर काम के लिए एक जैसी कीमत नहीं",
-      "projects.demoKey": "डेमो तस्वीरें स्पष्ट रूप से चिन्हित हैं",
+      "projects.demoKey": "तस्वीरें और डिज़ाइन दृश्य चिन्हित हैं",
       "projects.promiseTitle": "काम का एक स्पष्ट दृश्य रिकॉर्ड",
       "projects.promiseBody": "हर वास्तविक प्रोजेक्ट को स्थान, क्षेत्र, काम के दायरे, स्थिति और निर्माण चरण के अनुसार व्यवस्थित किया जा सकता है।",
       "projects.adminLink": "प्रीव्यू डैशबोर्ड खोलें",
@@ -734,7 +734,7 @@
       "trust.choiceBody": "साहित्यासह किंवा साहित्याविना",
       "trust.quoteTitle": "गरजेनुसार कोटेशन",
       "trust.quoteBody": "प्रत्येक कामासाठी एकच किंमत नाही",
-      "projects.demoKey": "नमुना छायाचित्रे स्पष्टपणे चिन्हांकित आहेत",
+      "projects.demoKey": "छायाचित्रे आणि रचना दृश्ये चिन्हांकित आहेत",
       "projects.promiseTitle": "कामाची एक स्पष्ट दृश्य नोंद",
       "projects.promiseBody": "प्रत्येक वास्तविक प्रकल्प ठिकाण, क्षेत्रफळ, कामाची व्याप्ती, स्थिती आणि बांधकाम टप्प्यानुसार मांडता येईल.",
       "projects.adminLink": "पूर्वदृश्य डॅशबोर्ड उघडा",
@@ -844,6 +844,8 @@
     "mobile.quote": "nav.quote",
   };
 
+  const SHARED = JSON.parse(document.getElementById("site-content")?.textContent || "null");
+
   const DEFAULT_SETTINGS = {
     businessName: "Buniyaad Builders & Suppliers",
     phone: "",
@@ -921,56 +923,7 @@
         },
       ],
     },
-    {
-      id: "demo-yavatmal-home",
-      demo: true,
-      title: {
-        en: "Sample Yavatmal home journey",
-        hi: "यवतमाल घर का नमूना सफर",
-        mr: "यवतमाळमधील घराचा नमुना प्रवास",
-      },
-      location: {
-        en: "Yavatmal — demonstration",
-        hi: "यवतमाल — प्रदर्शन",
-        mr: "यवतमाळ — प्रात्यक्षिक",
-      },
-      area: {
-        en: "Illustrative project",
-        hi: "उदाहरण प्रोजेक्ट",
-        mr: "उदाहरण प्रकल्प",
-      },
-      scope: "with-materials",
-      status: "completed",
-      images: [
-        {
-          src: "assets/foundation.webp",
-          stage: "foundation",
-          alt: {
-            en: "Demonstration view of a house foundation stage",
-            hi: "घर की नींव के चरण का प्रदर्शन दृश्य",
-            mr: "घराच्या पायाभरणीच्या टप्प्याचे प्रात्यक्षिक दृश्य",
-          },
-        },
-        {
-          src: "assets/brickwork.webp",
-          stage: "brickwork",
-          alt: {
-            en: "Demonstration view of a house brickwork stage",
-            hi: "घर में ईंट के काम के चरण का प्रदर्शन दृश्य",
-            mr: "घराच्या वीटकामाच्या टप्प्याचे प्रात्यक्षिक दृश्य",
-          },
-        },
-        {
-          src: "assets/completed.webp",
-          stage: "completed",
-          alt: {
-            en: "Demonstration view of a completed house",
-            hi: "तैयार घर का प्रदर्शन दृश्य",
-            mr: "पूर्ण घराचे प्रात्यक्षिक दृश्य",
-          },
-        },
-      ],
-    },
+
   ];
 
   const DEFAULT_MATERIALS = {
@@ -1027,6 +980,7 @@
   }
 
   function getInitialLanguage() {
+    if (SHARED?.language) return SHARED.language;
     const stored = safeStorageGet(STORAGE_KEYS.language);
     if (SUPPORTED_LANGUAGES.includes(stored)) return stored;
     const browserLanguage = String(navigator.language || "en").slice(0, 2).toLowerCase();
@@ -1034,7 +988,7 @@
   }
 
   function readSettings() {
-    const stored = readJson(STORAGE_KEYS.settings, {});
+    const stored = SHARED?.settings || {};
     return stored && typeof stored === "object" && !Array.isArray(stored)
       ? {
           ...DEFAULT_SETTINGS,
@@ -1046,12 +1000,11 @@
   }
 
   function readProjects() {
-    const stored = readJson(STORAGE_KEYS.projects, DEFAULT_PROJECTS);
-    return Array.isArray(stored) && stored.length ? stored : clone(DEFAULT_PROJECTS);
+    return SHARED ? SHARED.projects : clone(DEFAULT_PROJECTS);
   }
 
   function readMaterials() {
-    const stored = readJson(STORAGE_KEYS.materials, DEFAULT_MATERIALS);
+    const stored = SHARED?.materials || DEFAULT_MATERIALS;
     const normalized = clone(DEFAULT_MATERIALS);
 
     if (Array.isArray(stored)) {
@@ -1079,7 +1032,7 @@
   }
 
   function readTestimonials() {
-    const stored = readJson(STORAGE_KEYS.testimonials, DEFAULT_TESTIMONIALS);
+    const stored = SHARED?.testimonials || DEFAULT_TESTIMONIALS;
     return Array.isArray(stored) ? stored : [];
   }
 
@@ -1319,6 +1272,7 @@
   }
 
   function renderProjects() {
+    if (SHARED) return; // Published cards and project URLs are rendered by the server.
     const grid = document.getElementById("projectGrid");
     if (!grid) return;
     grid.replaceChildren();
@@ -1880,8 +1834,10 @@
     const form = event.currentTarget;
     if (!validateForm(form, type)) return;
     const message = type === "material" ? buildMaterialMessage(form) : buildConstructionMessage(form);
+    const url = buildWhatsAppUrl(message);
+    if (!url) { showToast("Contact details are not configured yet. Please check back shortly.", "error"); return; }
     showToast(t("forms.openingWhatsapp"));
-    openExternal(buildWhatsAppUrl(message));
+    openExternal(url);
   }
 
   function validateForm(form, type) {
@@ -2006,7 +1962,8 @@
 
   function buildWhatsAppUrl(message) {
     const number = normalizeWhatsAppNumber(settings.whatsapp);
-    const base = number ? `https://wa.me/${number}` : "https://wa.me/";
+    if (!number) return null;
+    const base = `https://wa.me/${number}`;
     return `${base}?text=${encodeURIComponent(message)}`;
   }
 
@@ -2027,7 +1984,10 @@
       const message = customKey && (TRANSLATIONS[language][customKey] || TRANSLATIONS.en[customKey])
         ? t(customKey, { business: settings.businessName || t("site.name") })
         : generalMessage;
-      link.setAttribute("href", buildWhatsAppUrl(message));
+      const url = buildWhatsAppUrl(message);
+      if (!url) { link.removeAttribute("href"); link.setAttribute("aria-disabled", "true"); link.title = "WhatsApp number will be added before launch"; return; }
+      link.removeAttribute("aria-disabled");
+      link.setAttribute("href", url);
       link.setAttribute("target", "_blank");
       link.setAttribute("rel", "noopener noreferrer");
     });
@@ -2089,6 +2049,7 @@
   }
 
   function initStorageSync() {
+    if (SHARED) return;
     window.addEventListener("storage", (event) => {
       if (event.key === STORAGE_KEYS.language && SUPPORTED_LANGUAGES.includes(event.newValue)) {
         setLanguage(event.newValue, false);
@@ -2115,6 +2076,7 @@
     initForms();
     initStorageSync();
     setLanguage(language, false);
+    if (SHARED) document.querySelectorAll("[data-phone-display]").forEach(el => el.removeAttribute("data-i18n"));
   }
 
   window.BuniyaadSite = {

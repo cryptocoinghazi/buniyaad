@@ -1,0 +1,16 @@
+{
+  "name": "buniyaad-builders",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "check": "npm run build && node scripts/check.mjs",
+    "dev": "node scripts/dev.mjs",
+    "db:local": "npx wrangler d1 migrations apply DB --local",
+    "db:remote": "npx wrangler d1 migrations apply DB --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
